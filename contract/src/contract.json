@@ -1,0 +1,117 @@
+{ parameter
+    (or (or (or (unit %addRewards) (unit %deposit))
+            (or (unit %earlyWithdraw) (unit %getMetadata)))
+        (or (or (unit %pause) (unit %start)) (unit %withdraw))) ;
+  storage
+    (pair (pair (pair (pair (list %admins address) (int %cur_round))
+                      (pair (list %deadlines timestamp) (nat %penalty)))
+                (pair (pair (timestamp %period) (big_map %players_deposit address mutez))
+                      (pair (big_map %players_round address int) (big_map %players_status address int))))
+          (pair (pair (mutez %req_deposit) (timestamp %start_date))
+                (pair (mutez %total_deposit) (int %total_rounds)))) ;
+  code { UNPAIR ;
+         IF_LEFT
+           { IF_LEFT
+               { IF_LEFT
+                   { DROP ; NIL operation ; PAIR }
+                   { DROP ;
+                     DUP ;
+                     CDR ;
+                     CAR ;
+                     CAR ;
+                     AMOUNT ;
+                     COMPARE ;
+                     NEQ ;
+                     IF { PUSH string "NOT_MATCH_REQUIRED_DEPOSIT" ; FAILWITH } {} ;
+                     DUP ;
+                     CAR ;
+                     CDR ;
+                     CAR ;
+                     CDR ;
+                     PUSH mutez 5000000 ;
+                     SOME ;
+                     SENDER ;
+                     UPDATE ;
+                     SWAP ;
+                     DUP ;
+                     DUG 2 ;
+                     CAR ;
+                     CDR ;
+                     CDR ;
+                     CAR ;
+                     SENDER ;
+                     GET ;
+                     DUP 3 ;
+                     CAR ;
+                     CDR ;
+                     CDR ;
+                     CAR ;
+                     SWAP ;
+                     IF_NONE { PUSH int 0 } {} ;
+                     PUSH int 1 ;
+                     ADD ;
+                     SOME ;
+                     SENDER ;
+                     UPDATE ;
+                     DUP 3 ;
+                     CDR ;
+                     CDR ;
+                     CDR ;
+                     PUSH mutez 5000000 ;
+                     PAIR ;
+                     DUP 4 ;
+                     CDR ;
+                     CAR ;
+                     PAIR ;
+                     DIG 3 ;
+                     CAR ;
+                     PAIR ;
+                     DUP ;
+                     CDR ;
+                     SWAP ;
+                     DUP ;
+                     DUG 2 ;
+                     CAR ;
+                     CDR ;
+                     CDR ;
+                     DIG 4 ;
+                     DUP 4 ;
+                     CAR ;
+                     CDR ;
+                     CAR ;
+                     CAR ;
+                     PAIR ;
+                     PAIR ;
+                     DIG 2 ;
+                     CAR ;
+                     CAR ;
+                     PAIR ;
+                     PAIR ;
+                     DUP ;
+                     CDR ;
+                     SWAP ;
+                     DUP ;
+                     DUG 2 ;
+                     CAR ;
+                     CDR ;
+                     CDR ;
+                     CDR ;
+                     DIG 3 ;
+                     PAIR ;
+                     DUP 3 ;
+                     CAR ;
+                     CDR ;
+                     CAR ;
+                     PAIR ;
+                     DIG 2 ;
+                     CAR ;
+                     CAR ;
+                     PAIR ;
+                     PAIR ;
+                     NIL operation ;
+                     PAIR } }
+               { IF_LEFT { DROP ; NIL operation ; PAIR } { DROP ; NIL operation ; PAIR } } }
+           { IF_LEFT
+               { IF_LEFT { DROP ; NIL operation ; PAIR } { DROP ; NIL operation ; PAIR } }
+               { DROP ; NIL operation ; PAIR } } } }
+
