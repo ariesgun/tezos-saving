@@ -107,7 +107,7 @@ let _cound_reward_per_player (storage : contract_storage)
             storage.round_status_map
     with
       Some count -> count
-    | None -> failwith "NO_PLAYER_FOUND" in
+    | None -> failwith "NO_WINNER_FOUND" in
   (storage.rewards / total_winner)
 
 let deposit (storage : contract_storage) : contract_storage =
@@ -200,7 +200,8 @@ let withdraw (storage : contract_storage) : contract_storage =
   let _ = fail_if_not_started storage in
   let _ = fail_if_not_finished storage in
   let player_deposit = find_player_deposit storage in
-  let withdraw_amount : tez = player_deposit + 10000000mutez in
+  let reward : tez = _cound_reward_per_player (storage) in
+  let withdraw_amount : tez = player_deposit + reward in
   let new_players_deposit =
     Big_map.update
       (Tezos.sender : address)

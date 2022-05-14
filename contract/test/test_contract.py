@@ -346,14 +346,14 @@ class TestContract(TestCase):
     # Given
     storage = {
       "admins" : [],
-      "req_deposit" : 10000000,
+      "req_deposit" : 5000000,
       "total_rounds" : 5,
       "penalty" : 30,
-      "rewards": 0,
+      "rewards": 10000000,
       "players_deposit" : {"tz1L738ifd66ah69PrmKAZzckvvHnbcSeqjf": 5000000},
       "players_round" : {"tz1L738ifd66ah69PrmKAZzckvvHnbcSeqjf": 1},
       "players_status" : {"tz1L738ifd66ah69PrmKAZzckvvHnbcSeqjf": "won"},
-      "round_status_map" : dict(),
+      "round_status_map" :{5: 1},
       "start_date" : 0,
       "period" : 1,
       "total_deposit" : 5000000,
@@ -362,7 +362,6 @@ class TestContract(TestCase):
     sender = "tz1L738ifd66ah69PrmKAZzckvvHnbcSeqjf"
 
     # When
-    start_now = pytezos.now()
     result = self.myContract.withdraw().interpret(storage=storage, source=sender, now=6)
 
     # Then
