@@ -3,7 +3,7 @@ import time
 import datetime
 from pytezos import MichelsonRuntimeError, pytezos, ContractInterface
 
-path_to_michelson_contract = "../src/contract.tz"
+path_to_michelson_contract = "../out/contract.tz"
 
 class TestContract(TestCase):
 

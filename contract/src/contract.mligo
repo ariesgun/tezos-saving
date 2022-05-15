@@ -6,18 +6,20 @@ type contract_storage =
    total_rounds : nat;
    penalty : nat;
    rewards : tez;
+   start_date : timestamp;
+   players : (address) set;
    players_deposit : (address, tez) big_map;
    players_round : (address, int) big_map;
    players_status : (address, status) big_map;
    round_status_map : (nat, nat) map;
-   start_date : timestamp;
    period : int;
    total_deposit : tez;
+   test_date : int;
    total_withdrawal : tez}
 
 type entrypoints =
   Deposit | EarlyWithdraw | AddRewards | Withdraw
-| GetMetadata | Update
+| GetMetadata of timestamp | Update
 
 let rec count_timestamp
   (t, round, period : timestamp * nat * int) : timestamp =
@@ -164,15 +166,17 @@ let deposit (storage : contract_storage) : contract_storage =
       (cur_round + 1n)
       (Some (cur_round_status_map + 1n))
       storage.round_status_map in
+  let new_players = Set.add Tezos.sender storage.players in
   {storage with
     total_deposit = new_total_deposit;
     players_deposit = new_players_deposit;
     players_round = new_players_round;
     players_status = new_players_status;
-    round_status_map = new_round_status_map}
+    round_status_map = new_round_status_map;
+    players = new_players}
 
 let early_withdraw (storage : contract_storage)
-: contract_storage =
+: (operation list * contract_storage) =
   let _ = fail_if_not_started storage in
   let _ = fail_if_finished storage in
   let player_deposit = find_player_deposit storage in
@@ -191,12 +195,22 @@ let early_withdraw (storage : contract_storage)
       (Tezos.sender : address)
       (Some (Quit))
       storage.players_status in
-  {storage with
-    players_deposit = new_players_deposit;
-    total_withdrawal = new_withdrawal;
-    players_status = new_players_status}
+  let maybe_contract : unit contract option =
+    Tezos.get_contract_opt Tezos.sender in
+  let receiver : unit contract =
+    match maybe_contract with
+      Some contract -> contract
+    | None -> (failwith ("Not a contract") : unit contract) in
+  let payout_operation : operation =
+    Tezos.transaction () new_withdrawal receiver in
+  ([payout_operation],
+   {storage with
+     players_deposit = new_players_deposit;
+     total_withdrawal = new_withdrawal;
+     players_status = new_players_status})
 
-let withdraw (storage : contract_storage) : contract_storage =
+let withdraw (storage : contract_storage)
+: (operation list * contract_storage) =
   let _ = fail_if_not_started storage in
   let _ = fail_if_not_finished storage in
   let player_deposit = find_player_deposit storage in
@@ -209,9 +223,18 @@ let withdraw (storage : contract_storage) : contract_storage =
       storage.players_deposit in
   let new_withdrawal =
     storage.total_withdrawal + withdraw_amount in
-  {storage with
-    players_deposit = new_players_deposit;
-    total_withdrawal = new_withdrawal}
+  let maybe_contract : unit contract option =
+    Tezos.get_contract_opt Tezos.sender in
+  let receiver : unit contract =
+    match maybe_contract with
+      Some contract -> contract
+    | None -> (failwith ("Not a contract") : unit contract) in
+  let payout_operation : operation =
+    Tezos.transaction () new_withdrawal receiver in
+  ([payout_operation],
+   {storage with
+     players_deposit = new_players_deposit;
+     total_withdrawal = new_withdrawal})
 
 let update (storage : contract_storage) : contract_storage =
   let cur_round =
@@ -240,22 +263,30 @@ let add_rewards (storage : contract_storage)
   then failwith "NOT_AN_ADMIN"
   else {storage with rewards = Tezos.amount}
 
+let get_metadata (_, storage : timestamp * contract_storage)
+: contract_storage =
+  if (Tezos.now > storage.start_date)
+  then
+    {storage with
+      test_date = (Tezos.now - storage.start_date)}
+  else
+    {storage with
+      test_date = (storage.start_date - Tezos.now)}
+
 let main (param, storage : entrypoints * contract_storage)
 : (operation list) * contract_storage =
   match param with
     Deposit _ ->
       let new_storage = deposit (storage) in
       ([] : operation list), new_storage
-  | EarlyWithdraw _ ->
-      let new_storage = early_withdraw (storage) in
-      ([] : operation list), new_storage
+  | EarlyWithdraw _ -> early_withdraw (storage)
   | AddRewards _ ->
       let new_storage = add_rewards (storage) in
       ([] : operation list), new_storage
-  | Withdraw _ ->
-      let new_storage = withdraw (storage) in
+  | Withdraw _ -> withdraw (storage)
+  | GetMetadata p ->
+      let new_storage = get_metadata (p, storage) in
       ([] : operation list), new_storage
-  | GetMetadata _ -> ([] : operation list), storage
   | Update _ ->
       let new_storage = update (storage) in
       ([] : operation list), new_storage

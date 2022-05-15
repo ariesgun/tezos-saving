@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@taquito/signer": "^12.1.0",
+    "@taquito/taquito": "^12.1.0",
+    "@taquito/utils": "^12.1.0",
+    "typescript": "^4.6.4"
+  }
+}
