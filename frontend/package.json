@@ -1,8 +1,8 @@
 {
+  "homepage": "https://ariesgun.github.io/tezos-savings",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ariesgun.github.io/tezos-savings",
   "dependencies": {
     "@ledgerhq/hw-transport-u2f": "^5.22.0",
     "@taquito/beacon-wallet": "^10.2.1",
