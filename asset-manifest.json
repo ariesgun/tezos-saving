@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/tezos-savings/static/css/main.b1fdbf34.chunk.css",
-    "main.js": "/tezos-savings/static/js/main.d57d85c2.chunk.js",
-    "main.js.map": "/tezos-savings/static/js/main.d57d85c2.chunk.js.map",
-    "runtime-main.js": "/tezos-savings/static/js/runtime-main.23f211f9.js",
-    "runtime-main.js.map": "/tezos-savings/static/js/runtime-main.23f211f9.js.map",
-    "static/js/2.957e41c4.chunk.js": "/tezos-savings/static/js/2.957e41c4.chunk.js",
-    "static/js/2.957e41c4.chunk.js.map": "/tezos-savings/static/js/2.957e41c4.chunk.js.map",
-    "index.html": "/tezos-savings/index.html",
-    "static/css/main.b1fdbf34.chunk.css.map": "/tezos-savings/static/css/main.b1fdbf34.chunk.css.map",
-    "static/js/2.957e41c4.chunk.js.LICENSE.txt": "/tezos-savings/static/js/2.957e41c4.chunk.js.LICENSE.txt"
+    "main.css": "/tezos-saving/static/css/main.b1fdbf34.chunk.css",
+    "main.js": "/tezos-saving/static/js/main.f9006cd5.chunk.js",
+    "main.js.map": "/tezos-saving/static/js/main.f9006cd5.chunk.js.map",
+    "runtime-main.js": "/tezos-saving/static/js/runtime-main.58d5895c.js",
+    "runtime-main.js.map": "/tezos-saving/static/js/runtime-main.58d5895c.js.map",
+    "static/js/2.957e41c4.chunk.js": "/tezos-saving/static/js/2.957e41c4.chunk.js",
+    "static/js/2.957e41c4.chunk.js.map": "/tezos-saving/static/js/2.957e41c4.chunk.js.map",
+    "index.html": "/tezos-saving/index.html",
+    "static/css/main.b1fdbf34.chunk.css.map": "/tezos-saving/static/css/main.b1fdbf34.chunk.css.map",
+    "static/js/2.957e41c4.chunk.js.LICENSE.txt": "/tezos-saving/static/js/2.957e41c4.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.23f211f9.js",
+    "static/js/runtime-main.58d5895c.js",
     "static/js/2.957e41c4.chunk.js",
     "static/css/main.b1fdbf34.chunk.css",
-    "static/js/main.d57d85c2.chunk.js"
+    "static/js/main.f9006cd5.chunk.js"
   ]
 }
