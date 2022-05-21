@@ -14,7 +14,7 @@ type contract_storage =
    round_status_map : (nat, nat) map;
    period : int;
    total_deposit : tez;
-   test_date : int;
+   test_date : timestamp;
    total_withdrawal : tez}
 
 type entrypoints =
@@ -43,7 +43,7 @@ let fail_if_not_finished (storage : contract_storage) : unit =
   let enddate =
     count_timestamp
       (storage.start_date, storage.total_rounds,
-       storage.period) in
+       storage.period * 86400) in
   if Tezos.now < enddate
   then failwith "NOT_FINISHED_YET"
   else unit
@@ -52,7 +52,7 @@ let fail_if_finished (storage : contract_storage) : unit =
   let enddate =
     count_timestamp
       (storage.start_date, storage.total_rounds,
-       storage.period) in
+       storage.period * 86400) in
   if Tezos.now >= enddate
   then failwith "FINISHED_ALREADY"
   else unit
@@ -265,13 +265,13 @@ let add_rewards (storage : contract_storage)
 
 let get_metadata (_, storage : timestamp * contract_storage)
 : contract_storage =
+  let enddate =
+    count_timestamp
+      (storage.start_date, storage.total_rounds,
+       storage.period * 86400) in
   if (Tezos.now > storage.start_date)
-  then
-    {storage with
-      test_date = (Tezos.now - storage.start_date)}
-  else
-    {storage with
-      test_date = (storage.start_date - Tezos.now)}
+  then {storage with test_date = enddate}
+  else {storage with test_date = enddate}
 
 let main (param, storage : entrypoints * contract_storage)
 : (operation list) * contract_storage =

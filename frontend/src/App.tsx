@@ -33,7 +33,7 @@ const App = () => {
   // Granadanet Increment/Decrement contract
   // const contractAddress: string = "KT1K3XVNzsmur7VRgY8CAHPUENaErzzEpe4e";
   // Hangzhounet Increment/Decrement contract
-  const contractAddress: string = "KT1Wt7eoGoxWsEnBDaQ9YLnsvV5ZqJuiFMfc";
+  const contractAddress: string = "KT1GEMoR7HkkiWN7hSt51JdPjXPPsSdN55Mq";
 
   const generateQrCode = (): { __html: string } => {
     const qr = qrcode(0, "L");
@@ -115,7 +115,8 @@ const App = () => {
                   Your Status: <span>{playerStatus ? 
                     (playerStatus.hasOwnProperty("winning") ? "Winning" :
                       playerStatus.hasOwnProperty("waiting") ? "Waiting" :
-                        playerStatus.hasOwnProperty("failed") ? "Failed" : "Waiting") : "Waiting"} </span>
+                        playerStatus.hasOwnProperty("failed") ? "Failed (Missed Deadline)" : 
+                          playerStatus.hasOwnProperty("quit") ? "Failed (Exit)" : "Waiting") : "Waiting..."} </span>
                 </h3>
                 <UpdateContract
                   contract={contract}
@@ -158,6 +159,16 @@ const App = () => {
               Total Deposit: 
               <i className="far fa-address-card"></i>&nbsp; 
               <span>{storage ? (storage.total_deposit.toNumber() / 1000000).toLocaleString("en-US") : 0} ꜩ</span>
+            </p>
+            <p>
+              Total Withdrawal: 
+              <i className="far fa-address-card"></i>&nbsp; 
+              <span>{storage ? (storage.total_withdrawal.toNumber() / 1000000).toLocaleString("en-US") : 0} ꜩ</span>
+            </p>
+            <p>
+              Remaining Deposit: 
+              <i className="far fa-address-card"></i>&nbsp; 
+              <span>{storage ? ((storage.total_deposit.toNumber() - storage.total_withdrawal.toNumber()) / 1000000).toLocaleString("en-US") : 0} ꜩ</span>
             </p>
             <p>
               Contract Address: 
